@@ -1,69 +1,67 @@
 package me.zhengjie.service;
 
 import me.zhengjie.domain.LocalStorage;
-import me.zhengjie.service.dto.LocalStorageDTO;
+import me.zhengjie.service.dto.LocalStorageDto;
 import me.zhengjie.service.dto.LocalStorageQueryCriteria;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
 
 /**
 * @author Zheng Jie
 * @date 2019-09-05
 */
-@CacheConfig(cacheNames = "localStorage")
 public interface LocalStorageService {
 
     /**
-    * queryAll 分页
-    * @param criteria
-    * @param pageable
-    * @return
-    */
-    @Cacheable
+     * 分页查询
+     * @param criteria 条件
+     * @param pageable 分页参数
+     * @return /
+     */
     Object queryAll(LocalStorageQueryCriteria criteria, Pageable pageable);
 
     /**
-    * queryAll 不分页
-    * @param criteria
-    * @return
-    */
-    @Cacheable
-    public Object queryAll(LocalStorageQueryCriteria criteria);
+     * 查询全部数据
+     * @param criteria 条件
+     * @return /
+     */
+    List<LocalStorageDto> queryAll(LocalStorageQueryCriteria criteria);
 
     /**
-     * findById
-     * @param id
-     * @return
+     * 根据ID查询
+     * @param id /
+     * @return /
      */
-    @Cacheable(key = "#p0")
-    LocalStorageDTO findById(Long id);
+    LocalStorageDto findById(Long id);
 
     /**
-     * create
-     * @param name
-     * @param file
-     * @return
+     * 上传
+     * @param name 文件名称
+     * @param file 文件
+     * @return /
      */
-    @CacheEvict(allEntries = true)
-    LocalStorageDTO create(String name, MultipartFile file);
+    LocalStorageDto create(String name, MultipartFile file);
 
     /**
-     * update
-     * @param resources
+     * 编辑
+     * @param resources 文件信息
      */
-    @CacheEvict(allEntries = true)
     void update(LocalStorage resources);
 
     /**
-     * delete
-     * @param id
+     * 多选删除
+     * @param ids /
      */
-    @CacheEvict(allEntries = true)
-    void delete(Long id);
-
-    @CacheEvict(allEntries = true)
     void deleteAll(Long[] ids);
+
+    /**
+     * 导出数据
+     * @param localStorageDtos 待导出的数据
+     * @param response /
+     * @throws IOException /
+     */
+    void download(List<LocalStorageDto> localStorageDtos, HttpServletResponse response) throws IOException;
 }
